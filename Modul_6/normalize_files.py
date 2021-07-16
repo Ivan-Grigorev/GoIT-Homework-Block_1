@@ -15,3 +15,4 @@ def normalize(name: str) -> str:
     trl_name = name.translate(TRANS)
     trl_name = re.sub(r"\W", "_", trl_name)
     return trl_name
+   
