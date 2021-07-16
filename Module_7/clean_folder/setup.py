@@ -4,7 +4,7 @@ from setuptools import setup, find_namespace_packages
 setup(name='clean_folder',
       version=1,
       description='Very useful code',
-      url='https://github.com/Ivan-Grigorev',
+      url='https:'https://github.com/Ivan-Grigorev/Go_IT-Home_work/tree/master/Module_7/clean_folder',
       author='Ivan Grigorev',
       author_email='iv.st.grigorev@gmail.com',
       license='MIT',
