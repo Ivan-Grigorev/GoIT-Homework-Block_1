@@ -8,7 +8,7 @@ def congratulate(users):
     wednesday_list = ""
     thursday_list = ""
     friday_list = ""
-    if current_date.weekday() == 2:  # The function displays users birthdays in Monday.
+    if current_date.weekday() == 0:  # The function displays users birthdays in Monday it`s 0.
         for i in users:
             for key, value in i.items():
                 birth_day = datetime(year=current_date.year, month=int(value[5:7]),
