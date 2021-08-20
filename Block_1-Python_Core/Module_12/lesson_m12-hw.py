@@ -1,5 +1,6 @@
 from collections import UserDict
 from datetime import datetime
+import pickle
 import re
 
 
@@ -19,6 +20,23 @@ class AddressBook(UserDict):
     def show_phone(self, name):
         return self.data[name]
 
+    def search_contact(self, elements: str):
+        try:
+            result = ""
+            el = elements.split(' ')
+            if len(el) == 1:
+                for key, val in self.data.items():
+                    if elements in key or elements in val:
+                        result += str(val)
+            else:
+                i, j = elements.split(' ')
+                for key, val in self.data.items():
+                    if i in key or j in val:
+                        result += str(val)
+            return result
+        except ValueError or TypeError or KeyError:
+            print("Wrong input name or contact information details, check please.")
+
     def delete_record(self, record):
         self.data.pop(record.name.value)
         self.contact_counter -= 1
@@ -27,8 +45,8 @@ class AddressBook(UserDict):
         counter = 0
         result = []
         for val in self.data.values():
-            result.append(str(val).replace("[", "")
-                          .replace("]", ""))
+            result.append(str(val).replace('[', '')
+                                  .replace(']', ''))
             counter += 1
             if counter == item:
                 break
@@ -37,8 +55,8 @@ class AddressBook(UserDict):
     def __str__(self):
         result = f"All {self.contact_counter} contacts in Address book:\n"
         for val in self.data.values():
-            result += str(val).replace("[", "") \
-                          .replace("]", "") + "\n"
+            result += str(val).replace('[', '') \
+                          .replace(']', '') + '\n'
         return result
 
 
@@ -147,8 +165,8 @@ class BirthDay(Field):
                     if 0 < int(birthday_date[1]) <= 12:
                         if len(birthday_date[2]) == 4:
                             record = Record(Name(name), [BirthDay(str(value.split(" ")[1:])
-                                                                  .replace(' ', '-')
-                                                                  .replace(',', ''))])
+                                                                           .replace(' ', '-')
+                                                                           .replace(',', ''))])
                             address_book.add_record(record)
                             print(f"{name.title()}`s birthday added to Address book.")
         except ValueError or TypeError:
@@ -162,6 +180,11 @@ address_book = AddressBook()
 
 
 def main():
+    try:
+        with open("address_book_data.bin", "rb") as file:
+            pickle.load(file)
+    except FileNotFoundError:
+        return AddressBook()
     print("Command Line Interface")
     while True:
         user_ans = input("Address book bot\n>>").lower()
@@ -175,6 +198,8 @@ def main():
                 change_command()
             if i == "phone":
                 phone_command()
+            if i == "search":
+                search_command()
             if i == "delete":
                 delete_command()
             if i == "help" or i == "reference":
@@ -189,6 +214,8 @@ def main():
             print("Empty input!\nDo you want to read reference for Address book bot?\n"
                   "Enter <<help>> or <<reference>>")
         if user_ans == "good bye" or user_ans == "close" or user_ans == "exit":
+            with open("address_book_data.bin", "wb") as file:
+                pickle.dump(address_book, file)
             print("Good bye!\nHope see you soon!")
             break
 
@@ -222,6 +249,12 @@ def change_command():
 def phone_command():
     user_info = input("Enter only name, please\n>>").lower()
     print(f"{address_book.show_phone(user_info)}")
+
+
+def search_command():
+    user_input = input("Give me element of name or element of contact information for search, please\n"
+                       "(between element of name or element of contact information must be space.)\n>>").lower()
+    print(address_book.search_contact(user_input))
 
 
 def show_part_command():
@@ -269,25 +302,30 @@ def help_command():
     "change" and enter command, then bot ask you details
     enter it;
 
-    5. "show part" - for show a certain part of contacts
+    5. "search" - for find contact in Address book by
+    element of name or element of contact information,
+    write "search" and enter command, then bot ask you
+    details enter it;
+
+    6. "show part" - for show a certain part of contacts
     in Address book, write "show part" and enter command,
     then bot ask you details enter it;
 
-    6. "show all" - for show all contacts in Address
+    7. "show all" - for show all contacts in Address
     book, write "show all" and enter command;
 
-    7. "delete" - for delete name and contact information
+    8. "delete" - for delete name and contact information
     in Address book, write "delete" and enter command,
     then bot ask you details enter it;
 
-    8. "help", "reference" - for ask reference how to
+    9. "help", "reference" - for ask reference how to
     use bot write "help" or "reference" and enter the
     command;
 
-    9. "hello" - for check Address book bot condition
+    10. "hello" - for check Address book bot condition
     write "hello" and enter command;
 
-    10. "close", "exit", "good bye" - for finish work with
+    11. "close", "exit", "good bye" - for finish work with
     Address book bot, write one of "close", "exit" or
     "good bye" and enter command, then you will exit from
     Command Line Interface.
